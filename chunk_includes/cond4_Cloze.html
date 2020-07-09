@@ -1,0 +1,174 @@
+<style media="screen" type="text/css"> 
+div { 
+   width: 35em; 
+   font-size:large; 
+   padding-left: 1em;
+   padding-right: 1em;
+   padding-bottom: 1em;
+   margin-top: 3em;
+   }
+   
+h3 {
+   font-size: large; 
+   margin-top:1em;
+   margin-bottom: 3em;
+   text-align: center;
+   }
+   
+p { 
+   font-size: 25;
+   text-align: justify;  
+   }
+  
+body {
+    color: white;
+    background-color: black;
+    margin-left: .5em;
+    margin-right: .5em;
+    margin-top: 3em;
+    font-size: 15pt;
+}
+
+   
+</style>
+
+<html>
+<body>
+  
+<div style="margin: 0 auto; text-align: justify; border:1px solid white; background-color:black">
+
+<form id="inputarea" onSubmit="return false;">
+  <h2>Start guessing:</h2>
+  <p id="demo"></p>
+  <br>
+  <input  id="guess" type="text" name="guess" value="" autocomplete="off" spellcheck="value" onkeypress="validateGuess(event)">
+  <br>
+  <p id="CountLine">Number of correct guesses: 0</p>
+  <br>
+  
+  <form id="ClozeData">
+    <input id="username" type="hidden" name="username" value="">
+    <input id="userdate" type="hidden" name="userdate" value="">
+    <input id="datatosend" type="hidden" name="datatosend">
+  </form>
+  
+</form> 
+  
+</div>
+
+<script>
+  
+
+
+var Story = " She had made a list for Mom, but she wasn\'t sure whether to ask for a parrot or a St Bernard dog or a python or a ferret, so she used the Dewey Decimal system to find the animal section to do some research.] Mr Hornswoggle found her as she was flipping through a book of exotic pets like monkeys and jungle cats.] He coughed and patted around his vest pockets for his glasses.] The only problem was they were on his face already.] Tully pointed to her eyes and cleared her throat.] \"Oooh, of course.] Thank you dear.] Tully, I wanted to speak with you.] I am leaving after lunch for a meeting and I won\'t be back until tomorrow.] I usually take care of the animals myself on Wednesdays, but I was hoping you might be able to fill in for me today, maybe after school?\" Tully\'s heart did a little leap.] \"Of course, Mr Hornswoggle!\" Tully said.] \"I\'ll just phone my mother from the office.] I\'m sure she won\'t mind\".] Mom didn\'t care, of course.] She is great like that! After school, Tully hugged all of her friends goodbye, slung her backpack over her shoulder, and made her way to the library.] Right away, she noticed Howard the hamster\'s lid was ajar.] Howard was running in his metal wheel.] He gave Tully a look, twitched his nose, and kept right on running.] Tully fixed his lid, then got the plastic container full of crickets to feed to Fluffy the tarantula.] And that\'s when Tully, the great detective, noticed the aquarium\'s lid was ajar too.] Interesting! Coco always spends his time swimming around his aquarium or laying on a rock under his UV sun lamp, which Mr Hornswoggle called \"basking\".] To continue, please press \'ESC\'"
+    
+var StorySplit = Story.match( /[^\]]+/g );
+
+var SentenceNumber = [];
+  
+for (i = 0; i < StorySplit.length; i++) { 
+    SentenceNumber[i] = i+1;
+}
+  
+var x=0;
+
+var str = StorySplit[x];
+
+var words = str.split(" ");
+  
+var fullsent = words[0];
+
+var i = 0;
+var corCount = 0;
+var guessWord = "";
+var correctWord = "";
+var acc = 0;
+
+document.getElementById("demo").innerHTML = fullsent;
+
+if(fullsent==""){
+var filler = "."
+filler = filler.fontcolor("black");
+document.getElementById("demo").innerHTML = filler;
+}
+
+document.getElementById("guess").focus();
+
+</script>
+
+</body>
+</html>
+
+<script>
+
+var start = Date.now()
+var end = 0
+var RT = 0
+var sent = SentenceNumber[x];
+  
+ 
+function validateGuess(e){ 
+    var keycode = (e.keycode ? e.keyCode : e.which); 
+    if (keycode == "13") { 
+    var x = document.getElementById("guess").value
+    
+    if (x == "" | x == " " | x == "  " | x == "   ") { 
+       
+       alert("You must make a guess!"); 
+       
+    } else { 
+       
+      handleEnter(event); } 
+  }
+}
+  
+  
+function handleEnter(e){
+    var keycode = (e.keyCode ? e.keyCode : e.which);
+    if (keycode == "13") {
+    i=i+1;
+    RT = Date.now() - start;
+    start = Date.now();
+
+    if (i == words.length) {
+    x++;
+
+    str = StorySplit[x];
+    words = str.split(" ");
+    i=1;
+    fullsent = "";
+    sent = SentenceNumber[x];
+    }
+
+
+    correctWord = words[i].toLowerCase();
+    guessWord = (document.getElementById("guess").value).toLowerCase();
+  
+    correctWord = correctWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    guessWord = guessWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+
+    correctWord = correctWord.trim();  
+    guessWord = guessWord.trim();
+
+    if (correctWord === guessWord) {
+          corCount = corCount + 1;
+      acc = 1;
+    } else {
+          acc = 0;
+    }  
+
+    document.getElementById("demo").innerHTML = fullsent + " " + words[i];
+    document.getElementById("guess").value = "";
+    document.getElementById("CountLine").innerHTML = "Number of correct guesses: " + corCount;
+
+    document.getElementById("guess").focus();
+
+    fullsent = fullsent + " " + words[i]
+    
+    document.getElementById("datatosend").value = document.getElementById("datatosend").value+sent+","+correctWord+","+guessWord+","+acc+","+RT+ ";";
+    
+    }
+}
+</script>
+
+

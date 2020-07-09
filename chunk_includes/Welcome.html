@@ -1,0 +1,245 @@
+
+<style media="screen" type="text/css"> 
+div { 
+   width: 50em; 
+   font-size:large; 
+   padding-left: 1em;
+   padding-right: 1em;
+   padding-bottom: -1em;
+   }
+   
+h1 {
+   margin-top:1em;
+   margin-bottom:.3em;
+   text-align: center;
+   }
+   
+p { 
+   font-size: large;
+   text-align: justify;  
+   }
+  
+body {
+    color: white;
+    background-color: black;
+    margin-left: .5em;
+    margin-right: .5em;
+    margin-top: 3em;
+    font-size: 15pt;
+}
+
+   
+</style>
+
+<html>
+  
+<div id="WelcomeScreen" name="WelcomeScreen" style="margin: 0 auto; text-align: justify; border:1px solid white; background-color:black"; width:50%>
+<center>
+  <h1> Welcome! </h1>
+  <i> Thank you for participating in this study! </i>
+</center>
+<br>
+<hr><br>
+In this study, you will be asked to guess words <b>one at a time</b> in order to complete sentences from a children's story. Periodically, you will also see pictures from the story. You will be guessing ~300 words throughout the
+experiment. At some points, you will simply be reading the story sentence-by-sentence. But other times, you will be completing sentences word-by-word. Please make your window full-screen for the best presentation.<br><br>
+  
+
+  
+When reading, you will push the 'Space' bar to present the sentences, one at a time.<br> <br>
+  
+When guessing, you will start by guessing the first word of the sentence <u>at random</u>, which may seem difficult at first without 
+any context clues. However, this may get easier as the story unfolds! To guess, just <i>type your answer</i> in the box, and press <b>ENTER</b>. The 
+correct answer will appear after you guess, and then you will continue guessing word-by-word.<br>
+
+<br> 
+A period will indicate the end of a sentence. After completing the sentence, you will need to make a guess about the beginning of
+the next sentence in the story. Once you make your guess, the <b>first word</b> of that <u>new</u> sentence will appear on the screen.<br><br>
+  
+<hr>
+<form id="inputarea" onSubmit="return false;">
+  <h3><u>Try a few examples below:</u></h3>
+  <p id="demo"></p>
+  <input  id="guess" type="text" name="guess" value="" autocomplete="off" spellcheck="value" onkeypress="handleEnter(event)">
+  <br>
+  <p id="CountLine">Number of correct guesses: 0<br>
+  <font size="2.5"><b>Note:</b> When guessing, you can type immediately without first selecting the input box. The cursor will be set there automatically.</font></p>
+</form>
+<hr>
+  
+<br>
+<b>Please try to correctly guess as many words as you can!</b> We may ask some comprehension questions about the 
+sentences that you are completing; so make sure to pay attention! <br> 
+<br>
+You will be asked to read the entire story and guess about 300 words. The study typically takes an hour. Also, you may find yourself making a lot of wrong guesses. 
+Most people only get 20 words correct! Once you are done, you will recieve a <u>completion code</u> to submit to Amazon Mechanical Turk. <br>
+<br>
+<hr>
+<b><u><p style="margin-bottom:.4em;">Comprehension Check:</p></u></b>
+
+<font size="3.5">
+  1. <i>How do I see the next sentence <b>when reading sentence-by-sentence</b></i><br>
+  <td>
+    <input name="question1l" type="radio" value="left" class="obligatory" id="q1left" /><label for="q1left"> Push the space bar!</label><br>
+    <input name="question1l" type="radio" value="right" id="q1right"/><label for="q1right"> Wait for the next sentence to appear</label>
+  </td>
+<br><br>
+  
+  2. <i>How many words will you be asked to guess?</i><br>
+  <td>
+    <input name="question2r" type="radio" value="left" class="obligatory" id="q2left" /><label for="q2left"> About 500 words</label><br>
+    <input name="question2r" type="radio" value="right" class= id="q2right"/><label for="q2right"> About 300 words</label>
+  </td>
+<br><br>
+  
+  3. <i>What do I submit to Amazon Mechanical Turk at the end?</i><br>
+  <td>
+    <input name="question3r" type="radio" value="left" class="obligatory" id="q3left" /><label for="q3left"> The completion code provided</label><br>
+    <input name="question3r" type="radio" value="right" id="q3right"/><label for="q3right"> My worker ID number</label>
+  </td>
+<br><br>
+  
+  4. <i>Is your window in full-screen mode?</i><br>
+  <td>
+    <input name="question4l" type="radio" value="left" class="obligatory" id="q4left" /><label for="q4left"> Yes</label><br>
+    <input name="question4l" type="radio" value="right" id="q4right"/><label for="q4right"> No</label>
+  </td>
+</font>
+
+  
+<br>
+<center>
+<form method="post">
+<input id="username" type="hidden" name="username">
+<input id="userdate" type="hidden" name="userdate">
+</form>
+    
+</div>
+
+<br><br>
+
+<script>
+var code = getRandomString(6);
+document.getElementById("username").value = code;
+document.getElementById("userdate").value = Date();
+
+function getRandomString(l) {
+  var validchar = "abcdefghijklmnopqrstuvwxyz1234567890";
+  var validcharN = validchar.length;
+  var result = "";
+  for(i = 0; i <= l; i++){
+    var index = Math.floor(Math.random() * validcharN+1);
+    result = result+validchar.charAt(index);
+  }
+  return result;
+}
+
+</script>
+  
+<script>
+
+var Story = " This is an example of a sentence. You will see a period at the end of a sentence, then guess any random sentence beginning. Carrots are the best orange vegetable. See this is easy.";
+
+var StorySplit = Story.match( /[^\.!\?]+[\.!\?]+/g );
+
+var SentenceNumber = [];
+
+
+for (i = 0; i < StorySplit.length; i++) { 
+    SentenceNumber[i] = i+1;
+}
+
+
+var func = function(a, b){return 0.5 - Math.random()}
+StorySplit.sort(func);
+SentenceNumber.sort(func);
+
+var x=0;
+
+var str = StorySplit[x];
+
+var words = str.split(" ");
+
+var fullsent = words[0];
+
+var i = 0;
+var corCount = 0;
+var guessWord = "";
+var correctWord = "";
+var acc = 0;
+
+document.getElementById("demo").innerHTML = fullsent;
+
+if(fullsent==""){
+var filler = "."
+filler = filler.fontcolor("black");
+document.getElementById("demo").innerHTML = filler;
+}
+
+document.getElementById("guess").focus();
+
+</script>
+  
+<script>
+
+var start = Date.now()
+var end = 0
+var RT = 0
+var sent = SentenceNumber[x];
+
+function handleEnter(e){
+    var keycode = (e.keyCode ? e.keyCode : e.which);
+    if (keycode == '13') {
+    i=i+1;
+    RT = Date.now() - start;
+    start = Date.now();
+
+    if (i == words.length) {
+    x++;
+
+    if(x == StorySplit.length){
+      document.getElementById("ClozeData").submit();
+    }
+
+    str = StorySplit[x];
+    words = str.split(" ");
+    i=1;
+    fullsent = "";
+    sent = SentenceNumber[x];
+    }
+
+
+    correctWord = words[i].toLowerCase();
+    guessWord = (document.getElementById("guess").value).toLowerCase();
+  
+    correctWord = correctWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    guessWord = guessWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+
+    correctWord = correctWord.trim();  
+    guessWord = guessWord.trim();
+
+    if (correctWord === guessWord) {
+          corCount = corCount + 1;
+      acc = 1;
+    } else {
+          acc = 0;
+    }  
+
+    document.getElementById("demo").innerHTML = fullsent + " " + words[i];
+    document.getElementById("guess").value = "";
+    document.getElementById("CountLine").innerHTML = "Number of correct guesses: " + corCount;
+
+    document.getElementById("guess").focus();
+
+    fullsent = fullsent + " " + words[i]
+    
+    document.getElementById("datatosend").value = document.getElementById("datatosend").value+sent+","+correctWord+","+guessWord+","+acc+","+RT+ ";";
+    
+    
+    }
+}
+</script>
+  
+</center>
+  
+</html>
+

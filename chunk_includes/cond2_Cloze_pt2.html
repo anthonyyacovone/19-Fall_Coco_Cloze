@@ -1,0 +1,174 @@
+<style media="screen" type="text/css"> 
+div { 
+   width: 35em; 
+   font-size:large; 
+   padding-left: 1em;
+   padding-right: 1em;
+   padding-bottom: 1em;
+   margin-top: 3em;
+   }
+   
+h3 {
+   font-size: large; 
+   margin-top:1em;
+   margin-bottom: 3em;
+   text-align: center;
+   }
+   
+p { 
+   font-size: 25;
+   text-align: justify;  
+   }
+  
+body {
+    color: white;
+    background-color: black;
+    margin-left: .5em;
+    margin-right: .5em;
+    margin-top: 3em;
+    font-size: 15pt;
+}
+
+   
+</style>
+
+<html>
+<body>
+  
+<div style="margin: 0 auto; text-align: justify; border:1px solid white; background-color:black">
+
+<form id="inputarea" onSubmit="return false;">
+  <h2>Start guessing:</h2>
+  <p id="demo"></p>
+  <br>
+  <input  id="guess" type="text" name="guess" value="" autocomplete="off" spellcheck="value" onkeypress="validateGuess(event)">
+  <br>
+  <p id="CountLine">Number of correct guesses: 0</p>
+  <br>
+  
+  <form id="ClozeData">
+    <input id="username" type="hidden" name="username" value="">
+    <input id="userdate" type="hidden" name="userdate" value="">
+    <input id="datatosend" type="hidden" name="datatosend">
+  </form>
+  
+</form> 
+  
+</div>
+
+<script>
+  
+
+
+var Story = " Just then the teacher, Miss Flores, clapped her hands.] \"Back to your seats, class!\" It\'s time for language arts.] Miss Flores pointed to the whiteboard, which had a bunch of sentences on it.] \"This morning, we are going to talk about good punctuation\".] Caleb poked Tully\'s arm.] \"That means not being late\".] He grinned for sounding so smart.] \"No,\" Lyra whispered.] \"That\'s punctual, not punctuation.] Punctuation is periods and commas and stuff\".] Caleb\'s face got red from embarrassment.] \"I knew that, I was just testing you!\" \"Alright class, we are going to read each sentence together, and then you can help me figure out what important parts of the sentence are missing, okay?\" \"Look at the first sentence: My cat is so lazy I have to hire other cats to take naps for her\".] Everybody howled with laughter.] Rocket fell right out of his seat.] \"Can we write one for a parakeet?\" Carys asked.] \"And my box turtle!\" Emily said, bouncing in her chair.] \"Like, ‘My turtle is so slow he walks backwards\'\".] Miss Flores held up her hands.] \"Emily that was fantastic.] Yes, let\'s write one for each of our pets.] But first, we need to do the assignment.] Deal?\" \"Deal!\" everybody yelled.] The next day, Tully was getting ready for school.] She dug through her entire closet searching for the right outfit to wear.] \"Oh, dear!\" Mom said as she tried to come into Tully\'s room.] She peeked around the clothes mountain.] To continue, please press \'ESC\'"
+    
+var StorySplit = Story.match( /[^\]]+/g );
+
+var SentenceNumber = [];
+  
+for (i = 0; i < StorySplit.length; i++) { 
+    SentenceNumber[i] = i+1;
+}
+  
+var x=0;
+
+var str = StorySplit[x];
+
+var words = str.split(" ");
+  
+var fullsent = words[0];
+
+var i = 0;
+var corCount = 0;
+var guessWord = "";
+var correctWord = "";
+var acc = 0;
+
+document.getElementById("demo").innerHTML = fullsent;
+
+if(fullsent==""){
+var filler = "."
+filler = filler.fontcolor("black");
+document.getElementById("demo").innerHTML = filler;
+}
+
+document.getElementById("guess").focus();
+
+</script>
+
+</body>
+</html>
+
+<script>
+
+var start = Date.now()
+var end = 0
+var RT = 0
+var sent = SentenceNumber[x];
+  
+ 
+function validateGuess(e){ 
+    var keycode = (e.keycode ? e.keyCode : e.which); 
+    if (keycode == "13") { 
+    var x = document.getElementById("guess").value
+    
+    if (x == "" | x == " " | x == "  " | x == "   ") { 
+       
+       alert("You must make a guess!"); 
+       
+    } else { 
+       
+      handleEnter(event); } 
+  }
+}
+  
+  
+function handleEnter(e){
+    var keycode = (e.keyCode ? e.keyCode : e.which);
+    if (keycode == "13") {
+    i=i+1;
+    RT = Date.now() - start;
+    start = Date.now();
+
+    if (i == words.length) {
+    x++;
+
+    str = StorySplit[x];
+    words = str.split(" ");
+    i=1;
+    fullsent = "";
+    sent = SentenceNumber[x];
+    }
+
+
+    correctWord = words[i].toLowerCase();
+    guessWord = (document.getElementById("guess").value).toLowerCase();
+  
+    correctWord = correctWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    guessWord = guessWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+
+    correctWord = correctWord.trim();  
+    guessWord = guessWord.trim();
+
+    if (correctWord === guessWord) {
+          corCount = corCount + 1;
+      acc = 1;
+    } else {
+          acc = 0;
+    }  
+
+    document.getElementById("demo").innerHTML = fullsent + " " + words[i];
+    document.getElementById("guess").value = "";
+    document.getElementById("CountLine").innerHTML = "Number of correct guesses: " + corCount;
+
+    document.getElementById("guess").focus();
+
+    fullsent = fullsent + " " + words[i]
+    
+    document.getElementById("datatosend").value = document.getElementById("datatosend").value+sent+","+correctWord+","+guessWord+","+acc+","+RT+ ";";
+    
+    }
+}
+</script>
+
+
